@@ -30,14 +30,36 @@ sources:
         columns:
           - name: gameorder
             description: "Game order sequence"
-          - name: date
-            description: "Game date"
-          - name: team
-            description: "Team code"
-          - name: elo
-            description: "Team ELO rating"
           - name: game_id
             description: "Unique game identifier"
+          - name: lg_id
+            description: "League identifier"
+          - name: date
+            description: "Game date"
+          - name: franch_id
+            description: "Franchise/team identifier"
+          - name: opp_franch
+            description: "Opponent franchise identifier"
+          - name: elo_i
+            description: "Team ELO rating before game"
+          - name: elo_n
+            description: "Team ELO rating after game"
+          - name: win_equiv
+            description: "Win equivalents"
+          - name: opp_id
+            description: "Opponent ID"
+          - name: opp_elo_i
+            description: "Opponent ELO before game"
+          - name: opp_elo_n
+            description: "Opponent ELO after game"
+          - name: game_location
+            description: "H=Home, A=Away, N=Neutral"
+          - name: game_result
+            description: "W/L and score"
+          - name: forecast
+            description: "Win probability based on ELO"
+          - name: notes
+            description: "Additional game notes"
 
 models:
   - name: stg_games

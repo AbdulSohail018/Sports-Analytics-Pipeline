@@ -1,21 +1,21 @@
 team_code,team_name,current_team_code
-BRK,Brooklyn Nets,BKN
-NJN,New Jersey Nets,BKN
-SEA,Seattle SuperSonics,OKC
-VAN,Vancouver Grizzlies,MEM
-CHH,Charlotte Hornets,CHA
-NOH,New Orleans Hornets,NOP
-NOK,New Orleans/Oklahoma City Hornets,NOP
-WSB,Washington Bullets,WAS
-SDC,San Diego Clippers,LAC
-KCK,Kansas City Kings,SAC
-BUF,Buffalo Braves,LAC
-CIN,Cincinnati Royals,SAC
-SYR,Syracuse Nationals,PHI
-STL,St. Louis Hawks,ATL
-MNL,Minneapolis Lakers,LAL
-PHW,Philadelphia Warriors,GSW
-ROC,Rochester Royals,SAC
-FTW,Fort Wayne Pistons,DET
-TRI,Tri-Cities Blackhawks,ATL
+Nets,Brooklyn Nets,Nets
+Nets,New Jersey Nets,Nets
+Supersonics,Seattle SuperSonics,Thunder
+Grizzlies,Vancouver Grizzlies,Grizzlies
+Hornets,Charlotte Hornets,Hornets
+Hornets,New Orleans Hornets,Pelicans
+Hornets,New Orleans/Oklahoma City Hornets,Pelicans
+Bullets,Washington Bullets,Wizards
+Clippers,San Diego Clippers,Clippers
+Kings,Kansas City Kings,Kings
+Braves,Buffalo Braves,Clippers
+Royals,Cincinnati Royals,Kings
+Nationals,Syracuse Nationals,76ers
+Hawks,St. Louis Hawks,Hawks
+Lakers,Minneapolis Lakers,Lakers
+Warriors,Philadelphia Warriors,Warriors
+Royals,Rochester Royals,Kings
+Pistons,Fort Wayne Pistons,Pistons
+Blackhawks,Tri-Cities Blackhawks,Hawks
 UNK,Unknown Team,UNK

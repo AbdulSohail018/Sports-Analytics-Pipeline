@@ -36,9 +36,9 @@ class TestFetch538:
     @pytest.fixture
     def sample_nbaallelo_csv(self):
         """Sample NBA all ELO CSV data"""
-        return """gameorder,date,team,elo,game_id
-1,2023-10-24,LAL,1500.0,202310240LAL
-2,2023-10-24,DEN,1600.0,202310240DEN"""
+        return """gameorder,game_id,lg_id,date,franch_id,opp_franch,elo_i,elo_n,win_equiv,opp_id,opp_elo_i,opp_elo_n,game_location,game_result,forecast,notes
+1,202310240LAL,NBA,2023-10-24,LAL,DEN,1500.0,1485.2,0.0,DEN,1600.0,1614.8,H,L 107-119,0.36,
+2,202310240DEN,NBA,2023-10-24,DEN,LAL,1600.0,1614.8,0.0,LAL,1500.0,1485.2,A,W 119-107,0.64,"""
     
     def test_ensure_directory_creates_path(self, tmp_path, monkeypatch):
         """Test that ensure_directory creates the raw data directory"""

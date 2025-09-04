@@ -16,15 +16,13 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configuration
-NBA_ELO_URL = os.getenv('NBA_ELO_URL', 'https://raw.githubusercontent.com/fivethirtyeight/data/master/nba-elo/elo.csv')
 NBA_ALLELO_URL = os.getenv('NBA_ALLELO_URL', 'https://raw.githubusercontent.com/fivethirtyeight/data/master/nba-elo/nbaallelo.csv')
 RAW_DATA_DIR = Path('./data/raw')
 MIN_ROW_COUNT = 1000
 
 # Expected columns for validation
 EXPECTED_COLUMNS = {
-    'elo': ['date', 'season', 'team1', 'team2', 'elo1_pre', 'elo2_pre', 'elo1_post', 'elo2_post'],
-    'nbaallelo': ['gameorder', 'date', 'team', 'elo', 'game_id']
+    'nbaallelo': ['gameorder', 'game_id', 'lg_id', 'date', 'franch_id', 'opp_franch', 'elo_i', 'elo_n', 'win_equiv', 'opp_id', 'opp_elo_i', 'opp_elo_n', 'game_location', 'game_result', 'forecast', 'notes']
 }
 
 def ensure_directory():
@@ -98,6 +96,66 @@ def fetch_and_save_csv(url, dataset_name, expected_cols):
         print(f"Unexpected error for {dataset_name}: {e}")
         raise
 
+def process_nbaallelo_to_games(df):
+    """Process nbaallelo data to create game-level data"""
+    print("\nProcessing nbaallelo data to create game-level dataset...")
+    
+    # Sort by game_id and date
+    df = df.sort_values(['game_id', 'date'])
+    
+    # Create games by pairing rows with same game_id
+    games = []
+    
+    # Group by game_id
+    for game_id, group in df.groupby('game_id'):
+        if len(group) == 2:  # Valid game with both teams
+            row1, row2 = group.iloc[0], group.iloc[1]
+            
+            # Determine home/away based on game_location
+            if row1['game_location'] == 'H':
+                home_row, away_row = row1, row2
+            else:
+                home_row, away_row = row2, row1
+            
+            # Extract scores from game_result (format: 'W 110-95' or 'L 95-110')
+            def extract_scores(result_str):
+                if pd.isna(result_str):
+                    return None, None
+                parts = result_str.split()
+                if len(parts) >= 2:
+                    scores = parts[1].split('-')
+                    if len(scores) == 2:
+                        return int(scores[0]), int(scores[1])
+                return None, None
+            
+            home_scores = extract_scores(home_row['game_result'])
+            away_scores = extract_scores(away_row['game_result'])
+            
+            # Create game record
+            game = {
+                'date': home_row['date'],
+                'season': pd.to_datetime(home_row['date']).year if pd.to_datetime(home_row['date']).month >= 10 else pd.to_datetime(home_row['date']).year - 1,
+                'neutral': 1 if home_row['game_location'] == 'N' else 0,
+                'playoff': 1 if 'playoff' in str(home_row.get('notes', '')).lower() else 0,
+                'team1': home_row['franch_id'],
+                'team2': away_row['franch_id'],
+                'elo1_pre': home_row['elo_i'],
+                'elo2_pre': away_row['elo_i'],
+                'elo_prob1': home_row['forecast'],
+                'elo_prob2': away_row['forecast'],
+                'elo1_post': home_row['elo_n'],
+                'elo2_post': away_row['elo_n'],
+                'score1': home_scores[0] if home_scores else None,
+                'score2': home_scores[1] if home_scores else None
+            }
+            
+            games.append(game)
+    
+    games_df = pd.DataFrame(games)
+    print(f"Created {len(games_df)} games from {len(df)} team records")
+    
+    return games_df
+
 def main():
     """Main execution function"""
     print("Starting FiveThirtyEight data fetch")
@@ -105,23 +163,39 @@ def main():
     
     ensure_directory()
     
-    # Fetch both datasets
-    datasets = [
-        (NBA_ELO_URL, 'elo', EXPECTED_COLUMNS['elo']),
-        (NBA_ALLELO_URL, 'nbaallelo', EXPECTED_COLUMNS['nbaallelo'])
-    ]
-    
-    fetched_files = []
-    for url, name, expected_cols in datasets:
-        try:
-            filepath = fetch_and_save_csv(url, name, expected_cols)
-            fetched_files.append(filepath)
-        except Exception as e:
-            print(f"Failed to fetch {name}: {e}")
-            sys.exit(1)
-    
-    print(f"\nSuccessfully fetched {len(fetched_files)} files")
-    print("Data fetch completed successfully!")
+    # Fetch nbaallelo dataset
+    try:
+        # Fetch the main dataset
+        nbaallelo_path = fetch_and_save_csv(
+            NBA_ALLELO_URL, 
+            'nbaallelo', 
+            EXPECTED_COLUMNS['nbaallelo']
+        )
+        
+        # Load and process to create games dataset
+        df = pd.read_csv(nbaallelo_path)
+        games_df = process_nbaallelo_to_games(df)
+        
+        # Save games dataset
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        games_filename = f"elo_{timestamp}.csv"
+        games_filepath = RAW_DATA_DIR / games_filename
+        games_df.to_csv(games_filepath, index=False)
+        print(f"Saved games data to: {games_filepath}")
+        
+        # Create stable symlink
+        games_link = RAW_DATA_DIR / "latest_elo.csv"
+        if games_link.exists():
+            games_link.unlink()
+        games_link.symlink_to(games_filename)
+        print(f"Created symlink: {games_link} -> {games_filename}")
+        
+        print("\nSuccessfully fetched and processed all data")
+        print("Data fetch completed successfully!")
+        
+    except Exception as e:
+        print(f"Failed to fetch or process data: {e}")
+        sys.exit(1)
     
 if __name__ == '__main__':
     main()

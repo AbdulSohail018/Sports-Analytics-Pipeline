@@ -25,10 +25,15 @@ flowchart LR
 
 The pipeline uses publicly available NBA data from FiveThirtyEight:
 
-- **[NBA Elo Ratings](https://raw.githubusercontent.com/fivethirtyeight/data/master/nba-elo/nbaallelo.csv)**: Historical team ELO ratings for every game
-- **[Game-Level Data](https://raw.githubusercontent.com/fivethirtyeight/data/master/nba-elo/elo.csv)**: Detailed game results with scores and ELO changes
+- **[NBA Elo All-Time Data](https://raw.githubusercontent.com/fivethirtyeight/data/master/nba-elo/nbaallelo.csv)**: Historical team ELO ratings and game results for every NBA game since 1947
 
-These URLs can be customized in the `.env` file if needed.
+This comprehensive dataset includes:
+- Team ELO ratings before and after each game
+- Game scores and results
+- Home/away/neutral court indicators
+- Win probabilities based on ELO ratings
+
+The data URL can be customized in the `.env` file if needed. The pipeline automatically processes this data to create both team-level records and game-level analytics.
 
 ## Tech Stack
 

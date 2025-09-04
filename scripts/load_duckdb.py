@@ -102,14 +102,25 @@ def load_nbaallelo_data(conn):
     # Drop and recreate table
     conn.execute("DROP TABLE IF EXISTS raw.nbaallelo")
     
-    # Create table
+    # Create table with full schema
     create_sql = """
     CREATE TABLE raw.nbaallelo (
         gameorder INTEGER,
+        game_id VARCHAR,
+        lg_id VARCHAR,
         date DATE,
-        team VARCHAR,
-        elo DOUBLE,
-        game_id VARCHAR
+        franch_id VARCHAR,
+        opp_franch VARCHAR,
+        elo_i DOUBLE,
+        elo_n DOUBLE,
+        win_equiv DOUBLE,
+        opp_id VARCHAR,
+        opp_elo_i DOUBLE,
+        opp_elo_n DOUBLE,
+        game_location VARCHAR,
+        game_result VARCHAR,
+        forecast DOUBLE,
+        notes VARCHAR
     )
     """
     conn.execute(create_sql)
@@ -127,7 +138,9 @@ def load_nbaallelo_data(conn):
     # Basic cleaning
     conn.execute("""
         UPDATE raw.nbaallelo 
-        SET team = 'UNK' WHERE team IS NULL OR team = '';
+        SET franch_id = 'UNK' WHERE franch_id IS NULL OR franch_id = '';
+        UPDATE raw.nbaallelo 
+        SET opp_franch = 'UNK' WHERE opp_franch IS NULL OR opp_franch = '';
     """)
 
 def create_team_lookup(conn):
