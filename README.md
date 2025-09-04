@@ -2,6 +2,12 @@
 
 A production-ready ELT pipeline for NBA analytics using Airflow, dbt, and DuckDB. This pipeline ingests FiveThirtyEight NBA data daily, transforms it into analytics-ready data marts, and provides interactive visualizations through a Streamlit dashboard.
 
+## Screenshots
+
+<!-- Add your screenshots here once captured -->
+<!-- ![NBA Analytics Dashboard](images/landing-page.png) -->
+<!-- ![Airflow Pipeline DAG](images/airflow-dag.png) -->
+
 ## Overview
 
 This pipeline demonstrates modern data engineering best practices:
