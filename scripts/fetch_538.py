@@ -36,11 +36,19 @@ def validate_csv_content(df, expected_columns, min_rows=MIN_ROW_COUNT):
     if len(df) < min_rows:
         raise ValueError(f"CSV has only {len(df)} rows, expected at least {min_rows}")
     
-    # Check for expected columns (subset check)
+    # Check for critical columns (flexible schema handling)
+    critical_columns = ['date', 'franch_id', 'game_id', 'elo_i', 'elo_n']
+    missing_critical = set(critical_columns) - set(df.columns)
+    if missing_critical:
+        print(f"ERROR: Critical columns missing: {missing_critical}")
+        print(f"Available columns: {list(df.columns)}")
+        raise ValueError(f"Schema has changed - missing critical columns: {missing_critical}")
+    
+    # Warn about other missing columns
     missing_columns = set(expected_columns) - set(df.columns)
     if missing_columns:
-        print(f"Warning: Expected columns missing: {missing_columns}")
-        print(f"Available columns: {list(df.columns)}")
+        print(f"Warning: Some expected columns missing: {missing_columns}")
+        print(f"Schema may have changed. Continuing with available columns.")
     
     return True
 

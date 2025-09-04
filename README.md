@@ -181,7 +181,9 @@ SCHEDULE_CRON=0 3 * * *  # Daily at 3 AM
 
 ### Switching Warehouses
 
-To use PostgreSQL instead of DuckDB:
+**Default**: The pipeline uses DuckDB by default - no server required, runs locally.
+
+**To use PostgreSQL**:
 
 1. Update `.env`:
    ```bash
@@ -198,9 +200,11 @@ To use PostgreSQL instead of DuckDB:
    pip install dbt-postgres
    ```
 
-3. Update `dbt/profiles.yml` to use the postgres target
+3. Update `dbt/profiles.yml` target from `dev` to `postgres`
 
-Similar steps apply for Snowflake or BigQuery.
+4. Update `scripts/load_duckdb.py` to implement PostgreSQL loading (currently only DuckDB is implemented)
+
+**Note**: Snowflake and BigQuery configurations are included in `profiles_template.yml` but require additional implementation in the loading scripts. The pipeline is production-ready with DuckDB and can be extended for other warehouses.
 
 ## Common Commands
 
@@ -309,13 +313,25 @@ For production use:
    - Consider managed services (Astronomer, MWAA)
    - Implement data partitioning strategies
 
+## CI/CD Pipeline
+
+The repository includes GitHub Actions workflows that run on every push and pull request:
+
+- **Python Tests**: Runs unit tests across Python 3.9, 3.10, and 3.11
+- **Code Quality**: Checks formatting with Black and linting with Flake8
+- **dbt Compilation**: Validates all SQL models compile correctly
+- **Docker Build**: Ensures Airflow containers build successfully
+- **Security Scanning**: Runs Trivy to check for vulnerabilities
+
 ## Contributing
 
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes with tests
-4. Ensure all tests pass
+4. Ensure all tests pass (`make test`)
 5. Submit a pull request
+
+The CI pipeline will automatically validate your changes.
 
 ## License
 

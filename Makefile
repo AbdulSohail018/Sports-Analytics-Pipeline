@@ -39,9 +39,9 @@ airflow-down: ## Stop and remove Airflow services
 
 dbt-seed-run: ## Run dbt seed, run, and test
 	@if [ ! -f .env ]; then cp .env.example .env; fi
-	cd dbt && dbt seed --profiles-dir .
-	cd dbt && dbt run --profiles-dir .
-	cd dbt && dbt test --profiles-dir .
+	cd dbt && export DBT_PROFILES_DIR=. && dbt seed
+	cd dbt && export DBT_PROFILES_DIR=. && dbt run
+	cd dbt && export DBT_PROFILES_DIR=. && dbt test
 	@echo "✓ dbt models built and tested"
 
 exports: ## Export metrics to CSV files

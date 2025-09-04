@@ -52,7 +52,13 @@ EXPORT_DIR = Path('./data/exports')
 def get_connection():
     """Get database connection"""
     if WAREHOUSE.upper() == 'DUCKDB':
-        return duckdb.connect(DUCKDB_PATH, read_only=True)
+        if not Path(DUCKDB_PATH).exists():
+            return None
+        try:
+            return duckdb.connect(DUCKDB_PATH, read_only=True)
+        except Exception as e:
+            st.error(f"Error connecting to database: {e}")
+            return None
     else:
         st.error(f"Warehouse type {WAREHOUSE} not supported in viewer. Please connect your BI tool directly.")
         return None
@@ -129,6 +135,26 @@ def load_export_data(filename):
 # Title and description
 st.title("🏀 NBA Analytics Dashboard")
 st.markdown("**Powered by FiveThirtyEight data** • Updated daily via Airflow + dbt")
+
+# Check if database exists
+if not get_connection():
+    st.warning("""
+    ### No data available yet!
+    
+    The analytics database hasn't been created. Please run the pipeline first:
+    
+    ```bash
+    make run-pipeline
+    ```
+    
+    Or if using Airflow:
+    1. Start Airflow: `make airflow-up`
+    2. Visit http://localhost:8080
+    3. Trigger the `sports_pipeline_dag`
+    
+    The pipeline will fetch data, run transformations, and populate the database.
+    """)
+    st.stop()
 
 # Sidebar filters
 with st.sidebar:

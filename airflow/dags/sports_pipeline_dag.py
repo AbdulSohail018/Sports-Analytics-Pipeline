@@ -31,6 +31,7 @@ default_args = {
     'retry_delay': timedelta(minutes=5),
     'retry_exponential_backoff': True,
     'max_retry_delay': timedelta(minutes=30),
+    'sla': timedelta(hours=2),  # Alert if task runs longer than 2 hours
 }
 
 # Create DAG
@@ -79,7 +80,7 @@ with TaskGroup('dbt_transformations', dag=dag) as dbt_group:
     # Task 3: dbt seed
     dbt_seed = BashOperator(
         task_id='dbt_seed',
-        bash_command='cd /opt/airflow/dbt && dbt seed --profiles-dir .',
+        bash_command='cd /opt/airflow/dbt && export DBT_PROFILES_DIR=/opt/airflow/dbt && dbt seed',
         dag=dag,
         on_success_callback=log_task_duration,
         on_failure_callback=failure_callback,
@@ -88,7 +89,7 @@ with TaskGroup('dbt_transformations', dag=dag) as dbt_group:
     # Task 4: dbt run
     dbt_run = BashOperator(
         task_id='dbt_run',
-        bash_command='cd /opt/airflow/dbt && dbt run --profiles-dir .',
+        bash_command='cd /opt/airflow/dbt && export DBT_PROFILES_DIR=/opt/airflow/dbt && dbt run',
         dag=dag,
         on_success_callback=log_task_duration,
         on_failure_callback=failure_callback,
@@ -97,7 +98,7 @@ with TaskGroup('dbt_transformations', dag=dag) as dbt_group:
     # Task 5: dbt test
     dbt_test = BashOperator(
         task_id='dbt_test',
-        bash_command='cd /opt/airflow/dbt && dbt test --profiles-dir .',
+        bash_command='cd /opt/airflow/dbt && export DBT_PROFILES_DIR=/opt/airflow/dbt && dbt test',
         dag=dag,
         on_success_callback=log_task_duration,
         on_failure_callback=failure_callback,
