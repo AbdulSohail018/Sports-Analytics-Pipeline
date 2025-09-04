@@ -1,0 +1,83 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Airflow
+airflow/logs/
+airflow/airflow.db
+airflow/airflow-webserver.pid
+airflow/standalone_admin_password.txt
+airflow/webserver_config.py
+
+# dbt
+dbt/logs/
+dbt/target/
+dbt/.user.yml
+dbt/profiles.yml
+
+# Data
+data/raw/*.csv
+data/warehouse/*.duckdb
+data/warehouse/*.duckdb.wal
+data/exports/*.csv
+!data/raw/.gitkeep
+!data/warehouse/.gitkeep
+!data/exports/.gitkeep
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Docker
+.docker/
+
+# Credentials
+.gcp/
+*.json
+!package.json
+!package-lock.json

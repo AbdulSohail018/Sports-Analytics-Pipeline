@@ -1,0 +1,75 @@
+version: 2
+
+sources:
+  - name: raw
+    database: "{{ env_var('DUCKDB_PATH', './data/warehouse/sports.duckdb') }}"
+    schema: raw
+    tables:
+      - name: elo
+        description: "FiveThirtyEight NBA ELO ratings and game results"
+        columns:
+          - name: date
+            description: "Game date"
+          - name: season
+            description: "NBA season year"
+          - name: team1
+            description: "Home team code"
+          - name: team2
+            description: "Away team code"
+          - name: elo1_pre
+            description: "Home team ELO rating before game"
+          - name: elo2_pre
+            description: "Away team ELO rating before game"
+          - name: score1
+            description: "Home team score"
+          - name: score2
+            description: "Away team score"
+            
+      - name: nbaallelo
+        description: "All-time NBA ELO ratings by team and game"
+        columns:
+          - name: gameorder
+            description: "Game order sequence"
+          - name: date
+            description: "Game date"
+          - name: team
+            description: "Team code"
+          - name: elo
+            description: "Team ELO rating"
+          - name: game_id
+            description: "Unique game identifier"
+
+models:
+  - name: stg_games
+    description: "Staged games data with calculated metrics"
+    columns:
+      - name: game_id
+        description: "Unique game identifier"
+        tests:
+          - unique
+          - not_null
+      - name: game_date
+        description: "Date of the game"
+        tests:
+          - not_null
+      - name: home_team
+        description: "Home team code"
+        tests:
+          - not_null
+      - name: away_team
+        description: "Away team code"
+        tests:
+          - not_null
+          
+  - name: stg_teams
+    description: "Staged teams dimension with aliases resolved"
+    columns:
+      - name: team_id
+        description: "Canonical team identifier"
+        tests:
+          - unique
+          - not_null
+      - name: team_name
+        description: "Full team name"
+        tests:
+          - not_null

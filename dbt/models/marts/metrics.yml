@@ -1,0 +1,89 @@
+version: 2
+
+metrics:
+  - name: win_rate
+    label: Win Rate
+    model: ref('fct_games')
+    description: "Team win percentage by season"
+    calculation_method: derived
+    expression: "SUM(win_flag) * 100.0 / COUNT(*)"
+    timestamp: game_date
+    time_grains: [month, quarter, year]
+    dimensions:
+      - team_id
+      - season
+      - game_location
+    filters:
+      - field: score_for
+        operator: 'is_not_null'
+    meta:
+      owner: analytics_team
+      
+  - name: avg_point_diff
+    label: Average Point Differential
+    model: ref('fct_games')
+    description: "Average score differential by team and season"
+    calculation_method: average
+    expression: score_diff
+    timestamp: game_date
+    time_grains: [month, quarter, year]
+    dimensions:
+      - team_id
+      - season
+      - playoff
+    meta:
+      owner: analytics_team
+      
+  - name: elo_change_season
+    label: Season ELO Change
+    model: ref('fct_games')
+    description: "Total ELO rating change over a season"
+    calculation_method: sum
+    expression: elo_change
+    timestamp: game_date
+    time_grains: [year]
+    dimensions:
+      - team_id
+      - season
+    meta:
+      owner: analytics_team
+      
+  - name: upset_rate
+    label: Upset Rate
+    model: ref('fct_games')
+    description: "Percentage of games resulting in upsets"
+    calculation_method: derived
+    expression: |
+      SUM(CASE 
+        WHEN performance_vs_expectation IN ('Major Upset', 'Minor Upset') 
+        THEN 1 ELSE 0 
+      END) * 100.0 / COUNT(*)
+    timestamp: game_date
+    time_grains: [month, quarter, year]
+    dimensions:
+      - team_id
+      - season
+    meta:
+      owner: analytics_team
+      
+  - name: home_advantage
+    label: Home Court Advantage
+    model: ref('fct_games')
+    description: "Win rate difference between home and away games"
+    calculation_method: derived
+    expression: |
+      SUM(CASE WHEN game_location = 'HOME' THEN win_flag ELSE 0 END) * 100.0 / 
+      NULLIF(SUM(CASE WHEN game_location = 'HOME' THEN 1 ELSE 0 END), 0) -
+      SUM(CASE WHEN game_location = 'AWAY' THEN win_flag ELSE 0 END) * 100.0 / 
+      NULLIF(SUM(CASE WHEN game_location = 'AWAY' THEN 1 ELSE 0 END), 0)
+    timestamp: game_date
+    time_grains: [year]
+    dimensions:
+      - team_id
+      - season
+    filters:
+      - field: neutral
+        operator: '='
+        value: 0
+    meta:
+      owner: analytics_team

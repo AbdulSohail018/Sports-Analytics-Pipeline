@@ -1,0 +1,19 @@
+# Airflow pipeline configuration
+pipeline:
+  name: sports_analytics
+  description: NBA analytics pipeline with FiveThirtyEight data
+  
+data_sources:
+  fivethirtyeight:
+    elo_url: ${NBA_ELO_URL}
+    allelo_url: ${NBA_ALLELO_URL}
+    
+warehouse:
+  type: ${WAREHOUSE}
+  duckdb_path: ${DUCKDB_PATH}
+  
+quality_checks:
+  min_row_count: 1000
+  expected_columns:
+    elo: ['date', 'team1', 'team2', 'elo1_pre', 'elo2_pre', 'elo1_post', 'elo2_post']
+    nbaallelo: ['date', 'team', 'elo', 'game_id']

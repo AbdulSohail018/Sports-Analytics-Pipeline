@@ -1,0 +1,119 @@
+version: 2
+
+models:
+  - name: dim_teams
+    description: "Teams dimension table"
+    columns:
+      - name: team_id
+        description: "Unique team identifier"
+        tests:
+          - unique
+          - not_null
+      - name: team_name
+        description: "Full team name"
+        tests:
+          - not_null
+      - name: conference
+        description: "Team conference"
+        tests:
+          - accepted_values:
+              values: ['Eastern', 'Western', 'Historical']
+      - name: is_active
+        description: "Whether team is currently active"
+        tests:
+          - not_null
+          
+  - name: fct_games
+    description: "Games fact table with one row per team per game"
+    columns:
+      - name: game_team_id
+        description: "Composite key of game_id and team_id"
+        tests:
+          - unique
+          - not_null
+      - name: game_id
+        description: "Game identifier"
+        tests:
+          - not_null
+      - name: team_id
+        description: "Team identifier"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_teams')
+              field: team_id
+      - name: opponent_id
+        description: "Opponent team identifier"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_teams')
+              field: team_id
+      - name: win_flag
+        description: "Whether team won (1) or lost (0)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1]
+      - name: game_location
+        description: "Game location from team perspective"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['HOME', 'AWAY']
+      - name: playoff
+        description: "Whether game was playoff"
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1]
+      - name: score_for
+        description: "Points scored by team"
+        tests:
+          - not_null
+      - name: score_against
+        description: "Points scored by opponent"
+        tests:
+          - not_null
+      - name: elo_pre
+        description: "Team ELO rating before game"
+        tests:
+          - not_null
+      - name: elo_post
+        description: "Team ELO rating after game"
+        tests:
+          - not_null
+
+# Generic tests
+tests:
+  - name: test_games_have_two_teams
+    description: "Each game should have exactly 2 team records"
+    sql: |
+      SELECT game_id, COUNT(*) as team_count
+      FROM {{ ref('fct_games') }}
+      GROUP BY game_id
+      HAVING COUNT(*) != 2
+      
+  - name: test_elo_changes_sum_to_zero
+    description: "ELO changes for both teams in a game should sum to zero"
+    sql: |
+      SELECT game_id, SUM(elo_change) as total_elo_change
+      FROM {{ ref('fct_games') }}
+      GROUP BY game_id
+      HAVING ABS(SUM(elo_change)) > 0.01
+      
+  - name: test_one_winner_per_game
+    description: "Each game should have exactly one winner"
+    sql: |
+      SELECT game_id, SUM(win_flag) as total_wins
+      FROM {{ ref('fct_games') }}
+      GROUP BY game_id
+      HAVING SUM(win_flag) != 1
+      
+  - name: test_scores_match_outcome
+    description: "Win flag should match score differential"
+    sql: |
+      SELECT *
+      FROM {{ ref('fct_games') }}
+      WHERE (win_flag = 1 AND score_diff <= 0)
+         OR (win_flag = 0 AND score_diff >= 0)

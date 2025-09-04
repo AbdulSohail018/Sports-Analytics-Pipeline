@@ -1,0 +1,48 @@
+# dbt Profile Template for Sports Analytics Pipeline
+# Copy this to profiles.yml and update with your credentials
+
+sports_analytics:
+  outputs:
+    # DuckDB (Default) - Local file-based warehouse
+    dev:
+      type: duckdb
+      path: "{{ env_var('DUCKDB_PATH', './data/warehouse/sports.duckdb') }}"
+      threads: 4
+      
+    # PostgreSQL - For production deployments
+    postgres:
+      type: postgres
+      host: "{{ env_var('PG_HOST', 'localhost') }}"
+      port: "{{ env_var('PG_PORT', '5432') | int }}"
+      user: "{{ env_var('PG_USER', 'postgres') }}"
+      pass: "{{ env_var('PG_PASSWORD', 'postgres') }}"
+      dbname: "{{ env_var('PG_DB', 'sports') }}"
+      schema: public
+      threads: 4
+      keepalives_idle: 0
+      
+    # Snowflake - For cloud data warehouse
+    snowflake:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      role: "{{ env_var('SNOWFLAKE_ROLE', 'TRANSFORMER') }}"
+      database: "{{ env_var('SNOWFLAKE_DATABASE', 'SPORTS_ANALYTICS') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE', 'COMPUTE_WH') }}"
+      schema: "{{ env_var('SNOWFLAKE_SCHEMA', 'PUBLIC') }}"
+      threads: 4
+      
+    # BigQuery - For Google Cloud Platform
+    bigquery:
+      type: bigquery
+      method: service-account
+      project: "{{ env_var('BQ_PROJECT_ID') }}"
+      dataset: "{{ env_var('BQ_DATASET', 'sports_analytics') }}"
+      keyfile: "{{ env_var('GOOGLE_APPLICATION_CREDENTIALS', './.gcp/service-account.json') }}"
+      threads: 4
+      timeout_seconds: 300
+      location: US
+      priority: interactive
+      
+  target: dev  # Default to DuckDB
