@@ -5,10 +5,10 @@ A production-ready ELT pipeline for NBA analytics using Airflow, dbt, and DuckDB
 ## Screenshots
 
 ### NBA Analytics Dashboard
-![NBA Analytics Dashboard](images/landing-page.png)
+![NBA Analytics Dashboard](images/Main%20Page.png)
 
-### Airflow Pipeline DAG
-![Airflow Pipeline DAG](images/airflow-dag.png)
+### Data Pipeline Architecture
+![Data Pipeline Architecture](images/Pipeline.png)
 
 ## Overview
 
