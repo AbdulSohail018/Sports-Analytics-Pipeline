@@ -1,6 +1,6 @@
 # Sports Analytics Pipeline
 
-A production-ready ELT pipeline for NBA analytics using Airflow, dbt, and DuckDB. This pipeline ingests FiveThirtyEight NBA data daily, transforms it into analytics-ready data marts, and provides interactive visualizations through a Streamlit dashboard.
+A production-ready ELT pipeline for NBA analytics using Airflow, dbt, and DuckDB. This pipeline ingests FiveThirtyEight NBA data, transforms it into analytics-ready data marts, and provides interactive visualizations through a Streamlit dashboard.
 
 ## Screenshots
 
