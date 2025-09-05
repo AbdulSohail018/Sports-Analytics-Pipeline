@@ -321,16 +321,6 @@ For production use:
    - Consider managed services (Astronomer, MWAA)
    - Implement data partitioning strategies
 
-## CI/CD Pipeline
-
-The repository includes GitHub Actions workflows that run on every push and pull request:
-
-- **Python Tests**: Runs unit tests across Python 3.9, 3.10, and 3.11
-- **Code Quality**: Checks formatting with Black and linting with Flake8
-- **dbt Compilation**: Validates all SQL models compile correctly
-- **Docker Build**: Ensures Airflow containers build successfully
-- **Security Scanning**: Runs Trivy to check for vulnerabilities
-
 ## Contributing
 
 1. Fork the repository
