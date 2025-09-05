@@ -1,12 +1,14 @@
 # Sports Analytics Pipeline
 
-A production-ready ELT pipeline for NBA analytics using Airflow, dbt, and DuckDB. This pipeline ingests FiveThirtyEight NBA data daily, transforms it into analytics-ready data marts, and provides interactive visualizations through a Streamlit dashboard.
+A production-ready ELT pipeline for NBA analytics using Airflow, dbt, and DuckDB. This pipeline ingests FiveThirtyEight NBA data, transforms it into analytics-ready data marts, and provides interactive visualizations through a Streamlit dashboard.
 
 ## Screenshots
 
-<!-- Add your screenshots here once captured -->
-<!-- ![NBA Analytics Dashboard](images/landing-page.png) -->
-<!-- ![Airflow Pipeline DAG](images/airflow-dag.png) -->
+### NBA Analytics Landing Page
+![NBA Analytics Landing Page](images/Main%20Page.png)
+
+### Data Pipeline Flow
+![Data Pipeline Flow](images/Pipeline.png)
 
 ## Overview
 
@@ -29,17 +31,24 @@ flowchart LR
 
 ## Data Sources
 
-The pipeline uses publicly available NBA data from FiveThirtyEight:
+The pipeline uses the **[balldontlie.io API](https://www.balldontlie.io/)** - a free, open NBA API that provides:
 
-- **[NBA Elo All-Time Data](https://raw.githubusercontent.com/fivethirtyeight/data/master/nba-elo/nbaallelo.csv)**: Historical team ELO ratings and game results for every NBA game since 1947
+- **Live Game Data**: Updated daily with current season games
+- **Team Information**: All 30 NBA teams with conference and division data
+- **Player Statistics**: Season averages for all active players
+- **No Authentication Required**: Free tier with generous rate limits
 
-This comprehensive dataset includes:
-- Team ELO ratings before and after each game
-- Game scores and results
-- Home/away/neutral court indicators
-- Win probabilities based on ELO ratings
+This modern API provides:
+- Real-time game scores and results
+- Team rosters and statistics
+- Player performance metrics
+- Historical game data
 
-The data URL can be customized in the `.env` file if needed. The pipeline automatically processes this data to create both team-level records and game-level analytics.
+The API is configured in `.env` with:
+- `NBA_API_BASE_URL`: The API endpoint (default: https://www.balldontlie.io/api/v1)
+- `DAYS_TO_FETCH`: Number of days of historical games to fetch (default: 30)
+
+**Note**: The pipeline previously used FiveThirtyEight data, which is no longer maintained. The new API provides more current and comprehensive data.
 
 ## Tech Stack
 
@@ -319,16 +328,6 @@ For production use:
    - Consider managed services (Astronomer, MWAA)
    - Implement data partitioning strategies
 
-## CI/CD Pipeline
-
-The repository includes GitHub Actions workflows that run on every push and pull request:
-
-- **Python Tests**: Runs unit tests across Python 3.9, 3.10, and 3.11
-- **Code Quality**: Checks formatting with Black and linting with Flake8
-- **dbt Compilation**: Validates all SQL models compile correctly
-- **Docker Build**: Ensures Airflow containers build successfully
-- **Security Scanning**: Runs Trivy to check for vulnerabilities
-
 ## Contributing
 
 1. Fork the repository
@@ -347,5 +346,5 @@ Copyright (c) 2025 Abdul Sohail Ahmed
 
 ## Acknowledgments
 
-- Data provided by [FiveThirtyEight](https://github.com/fivethirtyeight/data)
+- Data provided by [balldontlie.io](https://www.balldontlie.io/) - Free NBA API
 - Built with open-source tools: Airflow, dbt, DuckDB, Streamlit

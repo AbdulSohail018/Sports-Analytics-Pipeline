@@ -69,8 +69,8 @@ dev-setup: install airflow-init ## Complete development setup
 
 run-pipeline: ## Run the complete pipeline locally (without Airflow)
 	@if [ ! -f .env ]; then cp .env.example .env; fi
-	$(PYTHON) scripts/fetch_538.py
-	$(PYTHON) scripts/load_duckdb.py
+	$(PYTHON) scripts/fetch_nba_api.py
+	$(PYTHON) scripts/load_nba_api_data.py
 	$(MAKE) dbt-seed-run
 	$(PYTHON) scripts/export_metrics.py
 	@echo "✓ Pipeline executed successfully"
