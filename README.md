@@ -346,5 +346,5 @@ Copyright (c) 2025 Abdul Sohail Ahmed
 
 ## Acknowledgments
 
-- Data provided by [FiveThirtyEight](https://github.com/fivethirtyeight/data)
+- Data provided by [balldontlie.io](https://www.balldontlie.io/) - Free NBA API
 - Built with open-source tools: Airflow, dbt, DuckDB, Streamlit

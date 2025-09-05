@@ -1,7 +1,0 @@
-gameorder,game_id,lg_id,date,franch_id,opp_franch,elo_i,elo_n,win_equiv,opp_id,opp_elo_i,opp_elo_n,game_location,game_result,forecast,notes
-1,202310240LAL,NBA,2023-10-24,Lakers,Nuggets,1500.0,1485.2,0.0,Nuggets,1600.0,1614.8,H,L 107-119,0.36,
-2,202310240DEN,NBA,2023-10-24,Nuggets,Lakers,1600.0,1614.8,0.0,Lakers,1500.0,1485.2,A,W 119-107,0.64,
-3,202310240GSW,NBA,2023-10-24,Warriors,Suns,1520.0,1509.5,0.0,Suns,1550.0,1560.5,H,L 104-108,0.46,
-4,202310240PHX,NBA,2023-10-24,Suns,Warriors,1550.0,1560.5,0.0,Warriors,1520.0,1509.5,A,W 108-104,0.54,
-5,202310250BOS,NBA,2023-10-25,Celtics,Knicks,1580.0,1595.3,0.0,Knicks,1490.0,1474.7,H,W 112-99,0.62,
-6,202310250NYK,NBA,2023-10-25,Knicks,Celtics,1490.0,1474.7,0.0,Celtics,1580.0,1595.3,A,L 99-112,0.38,

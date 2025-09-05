@@ -1,6 +1,6 @@
 """
 Sports Analytics Pipeline DAG
-Orchestrates data ingestion, transformation, and export for NBA analytics
+Orchestrates NBA data ingestion from balldontlie.io API, transformation, and export
 """
 
 import os
