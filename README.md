@@ -22,11 +22,11 @@ This pipeline demonstrates modern data engineering best practices:
 
 ```mermaid
 flowchart LR
-    A[Airflow Scheduler] --> B[Fetch 538 CSVs]
-    B --> C[Load to Warehouse DuckDB]
+    A[Airflow Scheduler] --> B[Fetch NBA API Data]
+    B --> C[Load to DuckDB Warehouse]
     C --> D[dbt seed/run/test]
     D --> E[Export CSV for BI]
-    E --> F[Streamlit Viewer]
+    E --> F[Streamlit Dashboard]
 ```
 
 ## Data Sources
@@ -74,13 +74,13 @@ The API is configured in `.env` with:
 │   ├── seeds/                # Reference data
 │   └── tests/                # Data quality tests
 ├── scripts/                   # Python ETL scripts
-│   ├── fetch_538.py          # Download data from FiveThirtyEight
-│   ├── load_duckdb.py        # Load data into warehouse
+│   ├── fetch_nba_api.py      # Fetch data from balldontlie.io API
+│   ├── load_nba_api_data.py  # Load data into warehouse
 │   └── export_metrics.py     # Export results for BI tools
 ├── app/                      # Streamlit application
 │   └── streamlit_app.py      # Interactive dashboard
 ├── data/                     # Data storage
-│   ├── raw/                  # Downloaded source files
+│   ├── raw/                  # API response data (CSV format)
 │   ├── warehouse/            # DuckDB database
 │   └── exports/              # CSV exports for BI
 └── tests/                    # Unit tests
@@ -135,15 +135,17 @@ make app          # Launch Streamlit dashboard
 
 ## Pipeline Components
 
-### 1. Data Ingestion (`scripts/fetch_538.py`)
-- Downloads latest CSV files from FiveThirtyEight
-- Validates data quality (row counts, expected columns)
-- Creates timestamped backups with stable symlinks
+### 1. Data Ingestion (`scripts/fetch_nba_api.py`)
+- Fetches live NBA data from balldontlie.io API
+- Retrieves teams, games (last 30 days), and player statistics
+- Handles API pagination and rate limiting
+- Saves data as timestamped CSV files with stable symlinks
 
-### 2. Data Loading (`scripts/load_duckdb.py`)
+### 2. Data Loading (`scripts/load_nba_api_data.py`)
 - Creates database schemas (`raw`, `staging`)
-- Loads CSV data with appropriate data types
-- Performs basic cleaning (null handling, team aliases)
+- Loads API data into structured tables (teams, games, player_stats)
+- Creates backward-compatible tables for existing dbt models
+- Performs data quality checks and validation
 
 ### 3. dbt Transformations
 - **Staging Layer**: Cleans and standardizes raw data
