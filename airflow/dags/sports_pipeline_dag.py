@@ -57,10 +57,10 @@ def failure_callback(context):
     print(f"Task {task_instance.task_id} failed with error: {exception}")
     print("Troubleshooting hint: Check data source URLs, file permissions, and dbt profiles")
 
-# Task 1: Fetch raw data from FiveThirtyEight
+# Task 1: Fetch raw data from NBA API
 fetch_raw_data = BashOperator(
     task_id='fetch_raw_data',
-    bash_command='cd /opt/airflow && python scripts/fetch_538.py',
+    bash_command='cd /opt/airflow && python scripts/fetch_nba_api.py',
     dag=dag,
     on_success_callback=log_task_duration,
     on_failure_callback=failure_callback,
@@ -69,7 +69,7 @@ fetch_raw_data = BashOperator(
 # Task 2: Load data to warehouse
 load_to_warehouse = BashOperator(
     task_id='load_to_warehouse',
-    bash_command='cd /opt/airflow && python scripts/load_duckdb.py',
+    bash_command='cd /opt/airflow && python scripts/load_nba_api_data.py',
     dag=dag,
     on_success_callback=log_task_duration,
     on_failure_callback=failure_callback,

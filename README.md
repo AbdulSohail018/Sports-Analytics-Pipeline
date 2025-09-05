@@ -31,17 +31,24 @@ flowchart LR
 
 ## Data Sources
 
-The pipeline uses publicly available NBA data from FiveThirtyEight:
+The pipeline uses the **[balldontlie.io API](https://www.balldontlie.io/)** - a free, open NBA API that provides:
 
-- **[NBA Elo All-Time Data](https://raw.githubusercontent.com/fivethirtyeight/data/master/nba-elo/nbaallelo.csv)**: Historical team ELO ratings and game results for every NBA game since 1947
+- **Live Game Data**: Updated daily with current season games
+- **Team Information**: All 30 NBA teams with conference and division data
+- **Player Statistics**: Season averages for all active players
+- **No Authentication Required**: Free tier with generous rate limits
 
-This comprehensive dataset includes:
-- Team ELO ratings before and after each game
-- Game scores and results
-- Home/away/neutral court indicators
-- Win probabilities based on ELO ratings
+This modern API provides:
+- Real-time game scores and results
+- Team rosters and statistics
+- Player performance metrics
+- Historical game data
 
-The data URL can be customized in the `.env` file if needed. The pipeline automatically processes this data to create both team-level records and game-level analytics.
+The API is configured in `.env` with:
+- `NBA_API_BASE_URL`: The API endpoint (default: https://www.balldontlie.io/api/v1)
+- `DAYS_TO_FETCH`: Number of days of historical games to fetch (default: 30)
+
+**Note**: The pipeline previously used FiveThirtyEight data, which is no longer maintained. The new API provides more current and comprehensive data.
 
 ## Tech Stack
 
